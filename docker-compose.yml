@@ -1,0 +1,37 @@
+services:
+  wordpress:
+    image: wordpress:latest
+    restart: always
+    ports:
+      - 8080:80
+    environment:
+      WORDPRESS_DB_HOST: db
+      WORDPRESS_DB_USER: admin
+      WORDPRESS_DB_PASSWORD: 12345
+      WORDPRESS_DB_NAME: wordpress
+    volumes:
+      - ./wp-content:/var/www/html/wp-content  # Map thư mục wp-content để dễ chỉnh sửa
+      - wordpress:/var/www/html  # Lưu trữ dữ liệu WordPress
+
+  db:
+    image: mysql:8.0  # Sử dụng MySQL  để đảm bảo tương thích
+    restart: always
+    environment:
+      MYSQL_DATABASE: wordpress
+      MYSQL_USER: admin
+      MYSQL_PASSWORD: 12345
+      MYSQL_ROOT_PASSWORD: rootpassword  # Đặt password cụ thể cho root
+    volumes:
+      - db:/var/lib/mysql  # Lưu trữ dữ liệu MySQL
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    restart: always
+    ports:
+      - 8081:80
+    environment:
+      PMA_HOST: db
+      MYSQL_ROOT_PASSWORD: 12345
+volumes:
+  wordpress:
+  db:
